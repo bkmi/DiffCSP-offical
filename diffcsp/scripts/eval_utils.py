@@ -12,8 +12,6 @@ from pathlib import Path
 import smact
 from smact.screening import pauling_test
 
-import sys
-sys.path.append('.')
 
 from diffcsp.common.constants import CompScalerMeans, CompScalerStds
 from diffcsp.common.data_utils import StandardScaler, chemical_symbols
