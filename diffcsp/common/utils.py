@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Optional
 
 import dotenv
+import hydra
 import pytorch_lightning as pl
 from omegaconf import DictConfig, OmegaConf
 
@@ -78,11 +79,14 @@ def log_hyperparameters(
     )
 
     # send hparams to all loggers
-    trainer.logger.log_hyperparams(hparams)
+    if trainer.logger is None:
+        hydra.utils.log.info("There was no trainer.logger defined so hparams were NOT logged.")
+    else:
+        trainer.logger.log_hyperparams(hparams)
 
-    # disable logging any more hyperparameters for all loggers
-    # (this is just a trick to prevent trainer from logging hparams of model, since we already did that above)
-    trainer.logger.log_hyperparams = lambda params: None
+        # disable logging any more hyperparameters for all loggers
+        # (this is just a trick to prevent trainer from logging hparams of model, since we already did that above)
+        trainer.logger.log_hyperparams = lambda params: None
 
 
 # Load environment variables
