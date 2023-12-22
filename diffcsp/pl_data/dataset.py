@@ -152,7 +152,7 @@ class TensorCrystDataset(Dataset):
 
 
 
-@hydra.main(config_path=str(PROJECT_ROOT / "conf"), config_name="default")
+@hydra.main(config_path=str(PROJECT_ROOT / "conf"), config_name="default", version_base="1.1")
 def main(cfg: omegaconf.DictConfig):
     from torch_geometric.data import Batch
     from diffcsp.common.data_utils import get_scaler_from_data_list
