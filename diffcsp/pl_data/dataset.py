@@ -35,9 +35,9 @@ class CrystDataset(Dataset):
 
         self.preprocess(save_path, preprocess_workers, prop)
 
-        add_scaled_lattice_prop(self.cached_data, lattice_scale_method)
-        self.lattice_scaler = None
-        self.scaler = None
+        # add_scaled_lattice_prop(self.cached_data, lattice_scale_method)
+        # self.lattice_scaler = None
+        # self.scaler = None
 
     def preprocess(self, save_path, preprocess_workers, prop):
         if os.path.exists(save_path):
@@ -62,7 +62,7 @@ class CrystDataset(Dataset):
         data_dict = self.cached_data[index]
 
         # scaler is set in DataModule set stage
-        prop = self.scaler.transform(data_dict[self.prop])
+        # prop = self.scaler.transform(data_dict[self.prop])
         (frac_coords, atom_types, lengths, angles, edge_indices,
          to_jimages, num_atoms) = data_dict['graph_arrays']
 
@@ -80,7 +80,7 @@ class CrystDataset(Dataset):
             num_atoms=num_atoms,
             num_bonds=edge_indices.shape[0],
             num_nodes=num_atoms,  # special attribute used for batching in pytorch geometric
-            y=prop.view(1, -1),
+            # y=prop.view(1, -1),
         )
 
         if self.use_space_group:
@@ -117,9 +117,9 @@ class TensorCrystDataset(Dataset):
             primitive=self.primitive,
             graph_method=self.graph_method)
 
-        add_scaled_lattice_prop(self.cached_data, lattice_scale_method)
-        self.lattice_scaler = None
-        self.scaler = None
+        # add_scaled_lattice_prop(self.cached_data, lattice_scale_method)
+        # self.lattice_scaler = None
+        # self.scaler = None
 
     def __len__(self) -> int:
         return len(self.cached_data)
@@ -159,15 +159,15 @@ def main(cfg: omegaconf.DictConfig):
     dataset: CrystDataset = hydra.utils.instantiate(
         cfg.data.datamodule.datasets.train, _recursive_=False
     )
-    lattice_scaler = get_scaler_from_data_list(
-        dataset.cached_data,
-        key='scaled_lattice')
-    scaler = get_scaler_from_data_list(
-        dataset.cached_data,
-        key=dataset.prop)
+    # lattice_scaler = get_scaler_from_data_list(
+    #     dataset.cached_data,
+    #     key='scaled_lattice')
+    # scaler = get_scaler_from_data_list(
+    #     dataset.cached_data,
+    #     key=dataset.prop)
 
-    dataset.lattice_scaler = lattice_scaler
-    dataset.scaler = scaler
+    # dataset.lattice_scaler = lattice_scaler
+    # dataset.scaler = scaler
     data_list = [dataset[i] for i in range(len(dataset))]
     batch = Batch.from_data_list(data_list)
     return batch

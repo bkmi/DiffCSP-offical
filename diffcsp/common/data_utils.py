@@ -256,6 +256,8 @@ def lattice_params_to_matrix_torch(lengths, angles):
 
     lengths: torch.Tensor of shape (N, 3), unit A
     angles: torch.Tensor of shape (N, 3), unit degree
+
+    EACH ROW CORRESPONDS TO A LATTICE VECTOR!!!
     """
     angles_r = torch.deg2rad(angles)
     coses = torch.cos(angles_r)
