@@ -24,7 +24,7 @@ import pickle
 
 from diffcsp.scripts.eval_utils import (
     smact_validity, structure_validity, CompScaler, get_fp_pdist,
-    load_config, load_data, get_crystals_list, prop_model_eval, compute_cov, compute_cov_real)
+    load_config, load_data, get_crystals_list, prop_model_eval, compute_cov)
 
 CrystalNNFP = CrystalNNFingerprint.from_preset("ops")
 CompFP = ElementProperty.from_preset('magpie')
