@@ -83,6 +83,20 @@ class CrystDataset(Dataset):
             y=prop.view(1, -1),
         )
 
+        if "graph_arrays_initial" in data_dict:
+            (frac_coords_initial, atom_types_initial, lengths_initial, angles_initial, edge_indices_initial,
+            to_jimages_initial, num_atoms_initial) = data_dict['graph_arrays_initial']
+            data.frac_coords_initial = torch.Tensor(frac_coords_initial)
+            data.atom_types_initial = torch.LongTensor(atom_types_initial)
+            data.lengths_initial = torch.Tensor(lengths_initial).view(1, -1)
+            data.angles_initial = torch.Tensor(angles_initial).view(1, -1)
+            data.edge_index_initial = torch.LongTensor(
+                edge_indices_initial.T).contiguous()
+            data.to_jimages_initial = torch.LongTensor(to_jimages_initial)
+            data.num_atoms_initial = num_atoms_initial
+            data.num_bonds_initial = edge_indices_initial.shape[0]
+            data.num_nodes_initial = num_atoms_initial
+
         if self.use_space_group:
             data.spacegroup = torch.LongTensor([data_dict['spacegroup']])
             data.ops = torch.Tensor(data_dict['wyckoff_ops'])
@@ -145,6 +159,21 @@ class TensorCrystDataset(Dataset):
             num_bonds=edge_indices.shape[0],
             num_nodes=num_atoms,  # special attribute used for batching in pytorch geometric
         )
+
+        if "graph_arrays_initial" in data_dict:
+            (frac_coords_initial, atom_types_initial, lengths_initial, angles_initial, edge_indices_initial,
+            to_jimages_initial, num_atoms_initial) = data_dict['graph_arrays_initial']
+            data.frac_coords_initial = torch.Tensor(frac_coords_initial)
+            data.atom_types_initial = torch.LongTensor(atom_types_initial)
+            data.lengths_initial = torch.Tensor(lengths_initial).view(1, -1)
+            data.angles_initial = torch.Tensor(angles_initial).view(1, -1)
+            data.edge_index_initial = torch.LongTensor(
+                edge_indices_initial.T).contiguous()
+            data.to_jimages_initial = torch.LongTensor(to_jimages_initial)
+            data.num_atoms_initial = num_atoms_initial
+            data.num_bonds_initial = edge_indices_initial.shape[0]
+            data.num_nodes_initial = num_atoms_initial
+
         return data
 
     def __repr__(self) -> str:

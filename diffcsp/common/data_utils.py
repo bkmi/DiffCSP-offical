@@ -1176,6 +1176,15 @@ def process_one(row, niggli, primitive, graph_method, prop_list, use_space_group
         'graph_arrays': graph_arrays
     })
     result_dict.update(properties)
+
+    if "cif_initial" in row:
+        crystal_str_initial = row['cif_initial']
+        crystal_initial = build_crystal(
+            crystal_str_initial, niggli=niggli, primitive=primitive)
+        graph_arrays_initial = build_crystal_graph(crystal_initial, graph_method)
+        result_dict['graph_arrays_initial'] = graph_arrays_initial
+        result_dict['cif_initial'] = crystal_str_initial
+
     return result_dict
 
 
@@ -1214,6 +1223,7 @@ def preprocess_tensors(crystal_array_list, niggli, primitive, graph_method):
             coords=frac_coords,
             coords_are_cartesian=False)
         graph_arrays = build_crystal_graph(crystal, graph_method)
+        # TODO: graph_arrays_initial?
         result_dict = {
             'batch_idx': batch_idx,
             'graph_arrays': graph_arrays,
@@ -1248,6 +1258,19 @@ def add_scaled_lattice_prop(data_list, lattice_scale_method):
             lengths = lengths / float(num_atoms)**(1/3)
 
         dict['scaled_lattice'] = np.concatenate([lengths, angles])
+
+        if "graph_arrays_initial" in dict:
+            graph_arrays_initial = dict['graph_arrays_initial']
+            lengths_initial = graph_arrays_initial[2]
+            angles_initial = graph_arrays_initial[3]
+            num_atoms_initial = graph_arrays_initial[-1]
+            assert lengths_initial.shape[0] == angles_initial.shape[0] == 3
+            assert isinstance(num_atoms_initial, int)
+
+            if lattice_scale_method == 'scale_length':
+                lengths_initial = lengths_initial / float(num_atoms_initial)**(1/3)
+
+            dict['scaled_lattice_initial'] = np.concatenate([lengths_initial, angles_initial])
 
 
 def mard(targets, preds):
